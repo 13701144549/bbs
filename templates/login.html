@@ -1,0 +1,174 @@
+{% extends 'base/navbar.html' %}
+{% block content %}
+{% load static %}
+<div class="container background">
+    <div class="row">
+        <div id="login-box" class="col-md-6 col-md-offset-2">
+            <h3 class="text-center col-md-9 col-md-offset-3">请登录</h3>
+            <form action="{% url 'login' %}" method="post" class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username" class="col-sm-3 control-label">用户名</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="username" class="form-control need" id="username"
+                               placeholder="用户名" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label">密码</label>
+                    <div class="col-sm-9">
+                        <input type="password" name="password" class="form-control need" id="password"
+                               placeholder="密码" autocomplete="off">
+                    </div>
+                </div>
+                {#                    图片验证码#}
+                {#                  <div class="form-group">#}
+                {#                    <label for="pwd">验证码</label>#}
+                {##}
+                {#                     <div class="row">#}
+                {#                         <div class="col-md-6">#}
+                {#                             <input type="text" class="form-control" id="valid_code">#}
+                {#                         </div>#}
+                {#                         <div class="col-md-6">#}
+                {#                             <img width="260" height="40" src="/get_valid_img" alt="点击刷新验证码" id="get_valid_img">#}
+                {#                         </div>#}
+                {#                     </div>#}
+                {#                  </div>#}
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> 记住我
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="next" value="{{ next }}">
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9 text-center">
+                        <span class="error" style="color: red;margin-left: 20px"></span>
+                        <input id="login" type="button" value="登录" class="btn btn-primary btn-block">
+                    </div>
+                </div>
+                {#                滑动验证码#}
+                <div id="popup-captcha"></div>
+            </form>
+            <form action="{% url 'register' %}" class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9 text-center">
+                        <input type="submit" value="注册" class="btn btn-primary btn-block">
+                    </div>
+                </div>
+            </form>
+            <form action="{% url 'reset' %}" class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9 text-center">
+                        <input type="submit" value="重置密码" class="btn btn-primary btn-block">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'jquery-3.2.1.min.js' %}"></script>
+<script src="/static/init_ajax.js"></script>
+<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
+<script src="http://static.geetest.com/static/tools/gt.js"></script>
+{#图片验证码#}
+{#<script>#}
+{#    $('.login').on('click', function () {#}
+{#        $.ajax({#}
+{#            url: "",#}
+{#            type: "post",#}
+{#            data: {#}
+{#                csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(),#}
+{#                username: $('#username').val(),#}
+{#                password: $('#password').val(),#}
+{#                valid_code: $('#valid_code').val()#}
+{#            },#}
+{#            success: function (data) {#}
+{#                if (data.state) {#}
+{#                    location.href = '/main/'#}
+{#                }#}
+{#                else {#}
+{#                    $('.error').text(data.msg)#}
+{#                }#}
+{#            }#}
+{#        })#}
+{#    });#}
+
+{#    点击验证码实现刷新效果#}
+{#    $('#get_valid_img').on('click', function () {#}
+{#        $(this).attr('src',$(this).attr("src")+'?t='+ new Date().getTime()).show();#}
+{#    })#}
+{#</script>#}
+{#滑动验证码#}
+<script>
+    var handlerPopup = function (captchaObj) {
+        // 成功的回调
+        captchaObj.onSuccess(function () {
+            var validate = captchaObj.getValidate();
+            $.ajax({
+                url: "{% url 'login' %}", // 进行二次验证
+                type: "post",
+                dataType: "json",
+                data: {
+                    username: $('#username').val(),
+                    password: $('#password').val(),
+                    geetest_challenge: validate.geetest_challenge,
+                    geetest_validate: validate.geetest_validate,
+                    geetest_seccode: validate.geetest_seccode,
+                    csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val()
+                },
+                success: function (data) {
+                    if (data.state) {
+                        if(data.next_url){
+                            location.href = data.next_url;
+                        }
+                        else {
+                            location.href = '/system_home/';
+                        }
+                    }
+                    else {
+                        $('.error').text(data.msg);
+                    }
+                }
+            });
+        });
+        $("#login").click(function () {
+            captchaObj.show();
+        });
+        // 将验证码加到id为captcha的元素里
+        captchaObj.appendTo("#popup-captcha");
+        // 更多接口参考：http://www.geetest.com/install/sections/idx-client-sdk.html
+    };
+    // 验证开始需要向网站主后台获取id，challenge，success（是否启用failback）
+    $.ajax({
+        url: "/pc-geetest/register?t=" + (new Date()).getTime(), // 加随机数防止缓存
+{#        url: "{% url 'pcgetcaptcha' %}"+"?t=" + (new Date()).getTime(), // 加随机数防止缓存#}
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            // 使用initGeetest接口
+            // 参数1：配置参数
+            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+            initGeetest({
+                gt: data.gt,
+                challenge: data.challenge,
+                product: "popup", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                offline: !data.success // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+            }, handlerPopup);
+        }
+    });
+</script>
+{% endblock %}
+{% block login %}
+    active
+{% endblock %}
+
+{% block name %}
+    登录
+{% endblock %}
+
+

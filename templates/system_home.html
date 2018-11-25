@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>博客园-主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'img/log.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static '_layout.min.css' %}">
+    <link rel="stylesheet" href="{% static 'my-css.css' %}">
+    <link rel="stylesheet" href="{% static 'aggsite.css' %}">
+    <style>
+        .desc {
+            margin-left: -100px;
+            font-size: 13px;
+            text-align: justify;
+        }
+
+        .article_list {
+            margin-top: 40px;
+            margin-left: 20px;
+        }
+
+        .article_title {
+            padding-bottom: 8px;
+        }
+
+        .article_title a {
+            font-size: 16px;
+            font-weight: 600;
+            color: red;
+        }
+
+        .small {
+            margin-top: 10px;
+        }
+
+        .small a {
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        .small span {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    {#导航条相关开始#}
+    <div id="hd_info">
+        <div id="cnts">
+            <div id="site_nav_top">代码改变世界</div>
+            <div id="login_area" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if request.user.username %}
+                        <li><a href="/bbs_app/{{ request.user.username }}">{{ request.user.username }}</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">操作 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'logout' %}">注销</a></li>
+                                <li><a href="{% url 'reset' %}">修改密码</a></li>
+                                <li><a href="#">更换头像</a></li>
+                                <li><a href="#">设置</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'help' %}">帮助</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">[登录</a></li>
+                        <li><a href="{% url 'register' %}">注册]</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="header">
+        <p class="h_r_3"></p>
+        <p class="h_r_2"></p>
+        <p class="h_r_1"></p>
+        <div id="header_block">
+            <div id="logo">
+                <h1>
+                    <a href="{% url 'system_home' %}" title="开发者的网上家园"><img src="{% static 'img/logo_f.gif' %}"
+                                                                            alt="博客园Logo" width="142" height="55"></a>
+                </h1>
+            </div>
+        </div>
+        <p class="h_r_1"></p>
+        <p class="h_r_2"></p>
+        <p class="h_r_3"></p>
+    </div>
+    <div id="nav_menu"><a href="">园子</a><a href="">新闻</a><a
+            href="">博问</a><a href="">闪存</a><a
+            href="">小组</a><a href="">收藏</a><a
+            href="">招聘</a><a href="">班级</a><a
+            href="">找找看</a>
+    </div>
+    <div id="main">
+        <div class="post_nav_block_wrapper">
+            <ul class="post_nav_block">
+                <li><a href="" class="current_nav">首页</a></li>
+                <li><a href="" title="编辑精选博文">精华</a></li>
+                <li><a href="" title="候选区的博文">候选</a></li>
+                <li><a href="" title="新闻频道最新新闻">新闻</a></li>
+                <li><a href="" title="我关注博客的最新博文">关注</a></li>
+                <li><a href="" title="我评论过的博文">我评</a></li>
+                <li><a href="" title="我推荐过的博文">我赞</a></li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <div class="rss_link" id="rss_block">
+            <span id="posts_refresh_tips"></span><a id="posts_refresh" href="{% url 'system_home' %}" class="refresh"
+                                                    title="刷新博文列表">刷新</a>
+        </div>
+        {#导航条相关结束#}
+
+        {#正文相关开始#}
+        <div class="article_list">
+            {% for article in article_list %}
+                <div class="article_item">
+                    <div class="article_title"><a href="/bbs_app/{{ article.user.username }}/articles/{{ article.pk }}">{{ article.title }}</a></div>
+                    <div class="row">
+                        <div class="col-md-2"><img width="60" height="60" src="/media/{{ article.user.avatar }}" alt="">
+                        </div>
+                        <div class="col-md-9 desc">
+                            <p>{{ article.desc }}</p>
+                        </div>
+                    </div>
+                    <div class="small">
+                        <span><a href="/bbs_app/{{ article.user.username }}">{{ article.user.username }}</a></span>&nbsp;&nbsp;&nbsp;
+                        <span>发布于</span>
+                        <span>{{ article.create_time|date:"Y-m-d" }}</span>&nbsp;&nbsp;&nbsp;
+                        <a class="glyphicon glyphicon-comment" href="">评论</a>({{ article.comment_count }})
+                        <a class="glyphicon glyphicon-thumbs-up" href="">赞</a>({{ article.up_count }})
+                    </div>
+                    <hr>
+                </div>
+            {% endfor %}
+            <nav class="text-center" aria-label="...">
+                <ul class="pagination">
+                    {{ page_html|safe }}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {#        正文内容结束#}
+
+    {#左边栏开始#}
+    <div id="side_nav">
+        <div id="cate_title_block">
+            <div id="cate_title_title">
+                <div class="cate_title">网站分类</div>
+            </div>
+            <ul id="cate_item">
+                <li id="cate_item_108698" onmouseover="cateShow(108698)" onmouseout="cateHidden(108698)">
+                    <a href="">.NET技术(3)</a>
+                </li>
+                <li id="cate_item_2" onmouseover="cateShow(2)" onmouseout="cateHidden(2)">
+                    <a href="">编程语言(55)</a>
+                </li>
+                <li id="cate_item_108701" onmouseover="cateShow(108701)" onmouseout="cateHidden(108701)">
+                    <a href="">软件设计(2)</a>
+                </li>
+                <li id="cate_item_108703" onmouseover="cateShow(108703)" onmouseout="cateHidden(108703)">
+                    <a href="">Web前端(10)</a>
+                </li>
+                <li id="cate_item_108704" onmouseover="cateShow(108704)" onmouseout="cateHidden(108704)">
+                    <a href="">企业信息化(0)</a>
+                </li>
+                <li id="cate_item_108705" onmouseover="cateShow(108705)" onmouseout="cateHidden(108705)">
+                    <a href="">手机开发(2)</a>
+                </li>
+                <li id="cate_item_108709" onmouseover="cateShow(108709)" onmouseout="cateHidden(108709)">
+                    <a href="">软件工程(2)</a>
+                </li>
+                <li id="cate_item_108712" onmouseover="cateShow(108712)" onmouseout="cateHidden(108712)">
+                    <a href="">数据库技术(5)</a>
+                </li>
+                <li id="cate_item_108724" onmouseover="cateShow(108724)" onmouseout="cateHidden(108724)">
+                    <a href="">操作系统(5)</a>
+                </li>
+                <li id="cate_item_4" onmouseover="cateShow(4)" onmouseout="cateHidden(4)">
+                    <a href="">其他分类(17)</a>
+                </li>
+                <li id="cate_item_0" onmouseover="cateShow(0)" onmouseout="cateHidden(0)">
+                    <a href="">所有随笔(2209)</a>
+                </li>
+                <li id="cate_item_-1" onmouseover="cateShow(-1)" onmouseout="cateHidden(-1)">
+                    <a href="">所有评论(426)</a>
+                </li>
+            </ul>
+            <div class="cate_bottom"></div>
+            <div id="cate_sub_block">
+                <div id="cate_content_block_108698" onmouseover="cateShow(108698)" onmouseout="cateHidden(108698)"
+                     class="cate_content_block_wrapper" style="top:30px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">.NET新手区(0)</a></li>
+                            <li><a href="">ASP.NET(0)</a></li>
+                            <li><a href="">C#(3)</a></li>
+                            <li><a href="">.NET Core(0)</a></li>
+                            <li><a href="">WinForm(0)</a></li>
+                            <li><a href="">Silverlight(0)</a></li>
+                            <li><a href="">WCF(0)</a></li>
+                            <li><a href="">CLR(0)</a></li>
+                            <li><a href="">WPF(0)</a></li>
+                            <li><a href="">XNA(0)</a></li>
+                            <li><a href="">Visual Studio(0)</a></li>
+                            <li><a href="">ASP.NET MVC(0)</a></li>
+                            <li><a href="">控件开发(0)</a></li>
+                            <li><a href="">Entity Framework(0)</a></li>
+                            <li><a href="">NHibernate(0)</a></li>
+                            <li><a href="">WinRT/Metro(0)</a></li>
+                            <li><a href="">UWP(0)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_2" onmouseover="cateShow(2)" onmouseout="cateHidden(2)"
+                     class="cate_content_block_wrapper" style="top:58px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">Java(22)</a></li>
+                            <li><a href="">C++(12)</a></li>
+                            <li><a href="">PHP(3)</a></li>
+                            <li><a href="">Delphi(0)</a></li>
+                            <li><a href="">Python(17)</a></li>
+                            <li><a href="">Ruby(0)</a></li>
+                            <li><a href="">C语言(1)</a></li>
+                            <li><a href="">Erlang(0)</a></li>
+                            <li><a href="">Go(0)</a></li>
+                            <li><a href="">Swift(0)</a></li>
+                            <li><a href="">Scala(0)</a></li>
+                            <li><a href="">R语言(0)</a></li>
+                            <li><a href="">Verilog(0)</a></li>
+                            <li><a href="">其它语言(0)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_108701" onmouseover="cateShow(108701)" onmouseout="cateHidden(108701)"
+                     class="cate_content_block_wrapper" style="top:86px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">架构设计(1)</a></li>
+                            <li><a href="">面向对象(0)</a></li>
+                            <li><a href="">设计模式(1)</a></li>
+                            <li><a href="">领域驱动设计(0)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_108703" onmouseover="cateShow(108703)" onmouseout="cateHidden(108703)"
+                     class="cate_content_block_wrapper" style="top:114px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">Html/Css(3)</a></li>
+                            <li><a href="">JavaScript(6)</a></li>
+                            <li><a href="">jQuery(0)</a></li>
+                            <li><a href="">HTML5(1)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_108704" onmouseover="cateShow(108704)" onmouseout="cateHidden(108704)"
+                     class="cate_content_block_wrapper" style="top:142px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">BPM(0)</a></li>
+                            <li><a href="">SharePoint(0)</a></li>
+                            <li><a href="">GIS技术(0)</a></li>
+                            <li><a href="">SAP(0)</a></li>
+                            <li><a href="">Oracle ERP(0)</a></li>
+                            <li><a href="">Dynamics CRM(0)</a></li>
+                            <li><a href="">信息安全(0)</a></li>
+                            <li><a href="">企业信息化其他(0)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_108705" onmouseover="cateShow(108705)" onmouseout="cateHidden(108705)"
+                     class="cate_content_block_wrapper" style="top:170px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">Android开发(0)</a></li>
+                            <li><a href="">iOS开发(2)</a></li>
+                            <li><a href="">Windows Phone(0)</a></li>
+                            <li><a href="">Windows Mobile(0)</a></li>
+                            <li><a href="">其他手机开发(0)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_108709" onmouseover="cateShow(108709)" onmouseout="cateHidden(108709)"
+                     class="cate_content_block_wrapper" style="top:198px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">敏捷开发(0)</a></li>
+                            <li><a href="">项目与团队管理(2)</a></li>
+                            <li><a href="">软件工程其他(0)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_108712" onmouseover="cateShow(108712)" onmouseout="cateHidden(108712)"
+                     class="cate_content_block_wrapper" style="top:226px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">SQL Server(0)</a></li>
+                            <li><a href="">Oracle(2)</a></li>
+                            <li><a href="">MySQL(1)</a></li>
+                            <li><a href="">NoSQL(1)</a></li>
+                            <li><a href="">大数据(0)</a></li>
+                            <li><a href="">其它数据库(1)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_108724" onmouseover="cateShow(108724)" onmouseout="cateHidden(108724)"
+                     class="cate_content_block_wrapper" style="top:254px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">Windows(0)</a></li>
+                            <li><a href="">Windows Server(0)</a></li>
+                            <li><a href="">Linux(5)</a></li>
+                            <li><a href="">OS X(0)</a></li>
+                            <li><a href="">嵌入式(0)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+                <div id="cate_content_block_4" onmouseover="cateShow(4)" onmouseout="cateHidden(4)"
+                     class="cate_content_block_wrapper" style="top:282px">
+                    <div class="cate_content_top"></div>
+                    <div class="cate_content_block">
+                        <ul>
+                            <li><a href="">非技术区(3)</a></li>
+                            <li><a href="">软件测试(0)</a></li>
+                            <li><a href="">代码与软件发布(0)</a></li>
+                            <li><a href="">计算机图形学(0)</a></li>
+                            <li><a href="">游戏开发(0)</a></li>
+                            <li><a href="">程序人生(2)</a></li>
+                            <li><a href="">求职面试(0)</a></li>
+                            <li><a href="">读书区(1)</a></li>
+                            <li><a href="">转载区(0)</a></li>
+                            <li><a href="">Windows CE(0)</a></li>
+                            <li><a href="">翻译区(0)</a></li>
+                            <li><a href="">开源研究(1)</a></li>
+                            <li><a href="">Flex(0)</a></li>
+                            <li><a href="">云计算(0)</a></li>
+                            <li><a href="">算法与数据结构(5)</a></li>
+                            <li><a href="">人工智能(2)</a></li>
+                            <li><a href="">其他技术区(3)</a></li>
+                        </ul>
+                    </div>
+                    <div class="cate_content_bottom"></div>
+                </div>
+            </div>
+            <script type="text/javascript">var cateIdList = '108698,2,108701,108703,108704,108705,108709,108712,108724,4';
+            aggSite.loadSubCategories();</script>
+        </div>
+        <div class="l_s"></div>
+        <p class="r_l_3"></p>
+        <p class="r_l_2"></p>
+        <p class="r_l_1"></p>
+        <div class="w_l">
+            <h4>链接</h4>
+            <ul>
+                <li><a href="" target="_blank">反馈或建议</a></li>
+                <li><a href="" target="_blank">官方博客</a></li>
+                <li><a href="" target="_blank">博客模板</a></li>
+                <li><a href="">Java博客</a></li>
+                <li><a href="">C++博客</a></li>
+                <li><a href="">手机版</a></li>
+            </ul>
+        </div>
+        <p class="r_l_1"></p>
+        <p class="r_l_2"></p>
+        <p class="r_l_3"></p>
+        <div class="l_s"></div>
+        <div id="user_stats"><p class="r_l_3"></p>
+            <p class="r_l_2"></p>
+            <p class="r_l_1"></p>
+            <div class="w_l">
+                <h4>最新推荐博客</h4>
+                <div>
+                    <ul>
+
+                        <li><a href="" target="_blank">FlyLolo</a></li>
+                        <li><a href="" target="_blank">shaomeng</a></li>
+                        <li><a href="" target="_blank">侯振宇</a></li>
+                        <li><a href="" target="_blank">ITDragon龙</a></li>
+                        <li><a href="" target="_blank">程序猿小卡</a></li>
+                        <li class="blogger_more"><a href="" target="_blank">»
+                            更多推荐博客</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="r_l_1"></p>
+            <p class="r_l_2"></p>
+            <p class="r_l_3"></p>
+            <div class="l_s"></div>
+            <p class="r_l_3"></p>
+            <p class="r_l_2"></p>
+            <p class="r_l_1"></p>
+            <div class="w_l">
+                <h4>推荐博客排行</h4>
+                <div id="blogger_list">
+                    <ul>
+                        <li>1. <a href="" target="_blank">Fish Li</a></li>
+                        <li>2. <a href="" target="_blank">Artech</a></li>
+                        <li>3. <a href="" target="_blank">路过秋天</a></li>
+                        <li>4. <a href="" target="_blank">腾飞（Jesse)</a></li>
+                        <li>5. <a href="" target="_blank">数据之巅</a></li>
+                        <li>6. <a href="" target="_blank">小坦克</a></li>
+                        <li>7. <a href="" target="_blank">CareySon</a></li>
+                        <li>8. <a href="" target="_blank">葡萄城控件技术团队</a></li>
+                        <li>9. <a href="" target="_blank">三生石上(FineUI控件)</a></li>
+                        <li>10. <a href="" target="_blank">张善友</a></li>
+                        <li>11. <a href="" target="_blank">一线码农</a></li>
+                        <li>12. <a href="" target="_blank">Vamei</a></li>
+                        <li>13. <a href="" target="_blank">叶小钗</a></li>
+                        <li>14. <a href="" target="_blank">农码一生</a></li>
+                        <li>15. <a href="" target="_blank">ChokCoco</a></li>
+                        <li>16. <a href="" target="_blank">Edison Chou</a></li>
+                        <li>17. <a href="" target="_blank">Jimmy Zhang</a></li>
+                        <li>18. <a href="" target="_blank">Insus.NET</a></li>
+                        <li>19. <a href="" target="_blank">Savorboard</a></li>
+                        <li>20. <a href="" target="_blank">滴答的雨</a></li>
+                        <li>21. <a href="" target="_blank">司徒正美</a></li>
+                        <li>22. <a href="" target="_blank">请叫我头头哥</a></li>
+                        <li>23. <a href="" target="_blank">夏天的森林</a></li>
+                        <li>24. <a href="" target="_blank">匠心十年</a></li>
+                        <li>25. <a href="" target="_blank">桦仔</a></li>
+                        <li class="blogger_more"><a href="" target="_blank">»
+                            更多推荐博客</a></li>
+                        <li class="blogger_more"><a href="" target="_blank">»
+                            博客列表(按积分)</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="r_l_1"></p>
+            <p class="r_l_2"></p>
+            <p class="r_l_3"></p></div>
+        <div class="l_s"></div>
+        <p class="r_l_3"></p>
+        <p class="r_l_2"></p>
+        <p class="r_l_1"></p>
+        <div class="w_l">
+            <h4>统计信息</h4>
+            <div id="site_stats">
+                <ul>
+                    <li>博客 - <span>409353</span></li>
+                    <li>随笔 - <span>5378711</span></li>
+                    <li>文章 - <span>570560</span></li>
+                    <li>评论 - <span>3017876</span></li>
+                </ul>
+            </div>
+        </div>
+        <p class="r_l_1"></p>
+        <p class="r_l_2"></p>
+        <p class="r_l_3"></p>
+    </div>
+    {#左边栏结束#}
+
+    {#右边栏开始#}
+    <div id="side_right">
+        <div id="search_block">
+            <div class="side_search">
+                <input type="text" id="zzk_q" class="search_input" onkeydown="return zzk_go_enter(event);"
+                       tabindex="3"><input onclick="zzk_go()" type="button" class="search_btn" value="找找看">
+            </div>
+            <div id="google_search" class="side_search">
+                <input type="text" id="google_search_q" class="search_input"
+                       onkeydown="return google_search_enter(event);"><input type="button" value="Google"
+                                                                             class="search_btn"
+                                                                             onclick="return google_search();">
+            </div>
+        </div>
+        <div id="ad_right_text" class="ad_right_text">
+            <ul>
+                <li><a href="http://www.hightopo.com/cn-index.html" target="_blank">【推荐】HTML5拓扑3D机房，电力工控Web
+                    SCADA</a></li>
+                <li><a href="https://www.cnblogs.com/cmt/p/8525042.html" target="_blank">【报名】2050大会 -
+                    博客园程序员团聚（5.25杭州）</a></li>
+                <li>
+                    <a href="https://cloud.tencent.com/developer/salon/activity-1070?fromSource=gwzcw.906365.906365.906365"
+                       target="_blank">【活动】腾讯云音视频技术沙龙，火热报名中</a></li>
+                <li><a href="http://arction.cn/" target="_blank">【推荐】业界最快速.NET数据可视化图表组件</a></li>
+            </ul>
+            <ul>
+                <li><a href="http://click.aliyun.com/m/19969/" target="_blank">【最新】40+篇服务器操作及运维基础知识</a></li>
+            </ul>
+        </div>
+        <div id="side_right_block">
+            <div class="w_r">
+                <h4><a href="https://news.cnblogs.com/">最新新闻</a><span class="more"><a
+                        href="https://news.cnblogs.com/" class="right_more">»</a></span></h4>
+                <ul>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">“币圈小散”众生相：是待割的“韭菜”，还是疯狂的赌徒</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">马斯克：自动驾驶永远不会完美 但比人类驾驶安全10倍</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">360首席财务官姚珏等两高管离职|周鸿祎：感觉突然 尊重并理解她</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">SpaceX成为最受欢迎私营企业之一 也是最受关注预上市公司</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">“美滴之战”幕后：到底在争夺什么？</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">如何开始深度学习？麻省理工开源了一份入门级课程</a></li>
+                </ul>
+            </div>
+            <div class="w_r">
+                <h4><a href="">48小时阅读排行</a><span class="more"><a
+                        href="" class="right_more">»</a></span></h4>
+                <ul>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">关于OpenAuth.Net被攻击</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">7天内我面试了10家公司，如何从命中率0%到命中率至70%？</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">异步导入导出架构设计</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">linux内核源码分析 - nvme设备的初始化</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">如何解释vue的生命周期才能令面试官满意？</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">使用 C# (.NET Core) 实现命令设计模式 (Command Pattern)</a></li>
+                </ul>
+            </div>
+            <div class="w_r">
+                <h4><a href="">10天推荐排行</a><span class="more"><a
+                        href="" class="right_more">»</a></span></h4>
+                <ul>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">70后.net老猿，尚能饭否？</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">.NET:持续进化的统一开发平台</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">【原创】公司各个阶段 CTO 需要做什么？（上篇）</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">.NET Core 2.1 Preview 2发布 - April 10, 2018</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">和小鲜肉相比，老程序员该由哪些优势?同时说下我看到的老程序员的三窟</a></li>
+                </ul>
+            </div>
+            <div class="w_r">
+                <h4><a href="">编辑推荐</a><span class="more"><a
+                        href="" class="right_more">»</a></span></h4>
+                <ul>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">linux内核源码分析 - nvme设备的初始化</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">谈程序员如何做好业务</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">写给 Android 应用工程师的 Binder 原理剖析</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">.NET：持续进化的统一开发平台</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">公司各个阶段 CTO 需要做什么？</a></li>
+                </ul>
+            </div>
+            <div class="w_r">
+                <h4><a href="">推荐新闻</a><span class="more"><a
+                        href="" class="right_more">»</a></span></h4>
+                <ul>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">美团收购摩拜的真实故事：猜中开头 没猜中结局</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">理工男们的致命边界</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">Google发布其非Linux系操作系统Fuchsia说明书</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">一头抹香鲸因吞下64磅垃圾 最后死于西班牙海滩</a></li>
+                </ul>
+            </div>
+            <div class="w_r">
+                <h4><a href="">博问已解决问题</a><span class="more"><a href="https://q.cnblogs.com/"
+                                                                class="right_more">»</a></span>
+                </h4>
+                <ul>
+                    <li><a href="" target="_blank" onmouseover="set_a_title(this);">c++windows函数用法</a>
+                    </li>
+                    <li><a href="" target="_blank" onmouseover="set_a_title(this);">Html
+                        非空校验</a></li>
+                    <li><a href="" target="_blank" onmouseover="set_a_title(this);">javascript是在js文件请求来一开始就把全部函数的VO解析了，还是在执行某个具体函数时才解析这个函数的VO？</a>
+                    </li>
+                    <li><a href="" target="_blank" onmouseover="set_a_title(this);">.Net
+                        WebAPI 验签问题</a></li>
+                </ul>
+            </div>
+            <div class="w_r">
+                <h4><a href="">知识库最新文章</a><span class="more"><a
+                        href="">»</a></span></h4>
+                <ul>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">写给自学者的入门指南</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">和程序员谈恋爱</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">学会学习</a></li>
+                    <li><a href="" target="_blank"
+                           onmouseover="set_a_title(this);">优秀技术人的管理陷阱</a></li>
+                </ul>
+            </div>
+            <div id="cnblogs_b4" class="sidebar-image"><a
+                    href="https://www.yunqi2050.com/#/index" target="_blank"><img width="300" height="250"
+                                                                                  src="{% static 'img/www.jpg' %}"
+                                                                                  alt="2050"></a>
+            </div>
+        </div>
+    </div>
+    {#右边栏结束#}
+
+    {#中间底部开始#}
+    <div id="footer">
+        <div class="footer_block">
+            <p class="r_b_3"></p>
+            <p class="r_b_2"></p>
+            <p class="r_b_1"></p>
+            <div id="friend_link">
+                友情链接：<a href="http://click.aliyun.com/m/994/" target="_blank"><img
+                    src="{% static 'img/aliyun.png' %}" alt="阿里云"></a><a
+                    href="https://cloud.tencent.com/?fromSource=gwzcw.541531.541531.541531" target="_blank">腾讯云</a><a
+                    href="http://www.hujiang.com/" target="_blank">沪江网</a><a href="http://www.chinaz.com/"
+                                                                             target="_blank">站长之家</a><a
+                    href="http://dev.yesky.com/" target="_blank">天极网</a><a href="http://down.admin5.com/"
+                                                                           target="_blank">A5源码下载</a><a
+                    href="http://www.gcpowertools.com.cn/" target="_blank">葡萄城控件</a><a
+                    href="https://www.upyun.com/?md=cnblogs" target="_blank">又拍云</a><a
+                    href="http://zt.cnblogs.com/tingyun/" target="_blank">听云APP</a><a
+                    href="http://www.hightopo.com/cn-index.html" target="_blank">图扑软件</a><a
+                    href="http://www.cnblogs.com/mipengine/" target="_blank">百度MIP博客</a><a
+                    href="http://wetest.qq.com/?from=links_cnblogs" target="_blank">腾讯WeTest</a><a
+                    href="https://www.163yun.com/" target="_blank">网易云</a><a href="http://cloud.baidu.com/"
+                                                                             target="_blank">百度云</a><a
+                    href="http://yaq.qq.com/" target="_blank">腾讯御安全</a><a href="http://www.ucancode.com/index.html"
+                                                                          target="_blank">工控组态源码</a><a
+                    href="https://163yun.cnblogs.com/" target="_blank">网易云博客</a>
+            </div>
+            <p class="r_b_1"></p>
+            <p class="r_b_2"></p>
+            <p class="r_b_3"></p>
+        </div>
+    </div>
+    <div style="text-align: center">
+        <div><a href="">关于博客园</a><a href="">联系我们</a>©2004-2018<a
+                href="">博客园</a>保留所有权利<a href="" target="_blank">沪ICP备09004260号</a>
+        </div>
+        <div>
+            <a href=""
+               rel="nofollow" target="_blank"><img id="cnnic_img" src="{% static 'img/cnnic.png' %}" alt=""
+                                                   width="64" height="23"></a><a target="_blank"
+                                                                                 href=""
+                                                                                 style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img
+                src="{% static 'img/ghs.png' %}" alt=""><span
+                style="float:left;height:20px;line-height:20px;margin: 0 5px 0 5px; color:#939393;">沪公网安备 31011502001144号</span></a>
+        </div>
+    </div>
+    {#中间底部结束#}
+</div>
+<script src="{% static 'jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'init_ajax.js' %}"></script>
+<script src="{% static 'aggsite.js.下载' %}"></script>
+<script src="{% static 'analytics.js.下载' %}"></script>
+<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
+</body>
+</html>
+
+

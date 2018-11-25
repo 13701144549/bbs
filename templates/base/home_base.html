@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>博客园-{{ username }}的个人主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'img/log.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="/static/my-css.css/">
+    <link rel="stylesheet" href="/static/blog-common.css/">
+    <script src="/static/jquery-3.2.1.min.js"></script>
+    <script src="/static/init_ajax.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+</head>
+<body>
+<nav class="header navbar-fixed-top nav-box navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="" class="no-style">
+                <p class="title">{{ blog.title }}</p>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right nav-main-icon">
+                <li class="my-bav">
+                    <a href="{% url 'system_home' %}" class="no-style" style="color: #9acfea">博客园</a>
+                </li>
+                <li class="my-bav">
+                    <a href="/bbs_app/{{ blog.userinfo.username }}" style="color: #9acfea">首 页</a>
+                </li>
+                <li class="my-bav">
+                    <a href="" id="signUpMenu" style="color: #9acfea">新随笔</a>
+                </li>
+                <li class="my-bav">
+                    <a href="" id="assistMenu" style="color: #9acfea">联 系</a>
+                </li>
+                <li class="my-bav">
+                    <a href="" style="color: #9acfea">订 阅</a>
+                </li>
+                <li class="my-bav">
+                    <a href="/bbs_app/{{ username }}/backstage" style="color: #9acfea">管 理</a>
+                </li>
+                <li class="my-bav">
+                    <a href="{% url 'logout' %}" style="color: #9acfea">退 出</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="my-text">
+
+    {## 左边菜单部分#}
+    {% load my_tags %}
+    {% get_menu username %}
+
+    {## 右边文章部分#}
+    {% block content %}
+    {% endblock content %}
+
+</div>
+{#<div id="foot">#}
+{#    Copyright ©2018 {{ article.user.username }}#}
+{#</div>#}
+{## js代码#}
+    {% block js_block %}
+    {% endblock js_block %}
+</body>
+</html>
+
+

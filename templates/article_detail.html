@@ -1,0 +1,422 @@
+{% extends "base/home_base.html" %}
+{% block content %}
+
+    {% load static %}
+    <div class="col-md-8">
+        <h3 class="text-center">{{ article.title }}</h3>
+        <div>
+            {{ article.articledetail.content|safe }}
+        </div>
+        <div id="blog_post_info_block">
+            <div id="BlogPostCategory">分类: <a href="" target="_blank">设计模式</a></div>
+            <div id="EntryTag"></div>
+            <div id="blog_post_info">
+                <div id="green_channel">
+                    <a href="" id="green_channel_digg">好文要顶</a>
+                    <a id="green_channel_follow" href="">关注我</a>
+                    <a id="green_channel_favorite" href="">收藏该文</a>
+                    <a id="green_channel_weibo" href="" title="分享至新浪微博"><img src="/static/img/icon_weibo_24.png" alt=""></a>
+                    <a id="green_channel_wechat" href="" title="分享至微信"><img src="/static/img/wechat.png" alt=""></a>
+                </div>
+                <div id="author_profile">
+                    <div id="author_profile_info" class="author_profile_info">
+                        <a href="" target="_blank"><img
+                                src="/media/{{ article.user.avatar }}" class="author_avatar" alt=""></a>
+                        <div id="author_profile_detail" class="author_profile_info">
+                            <a href="">{{ article.user.username }}</a><br>
+                            <a href="">关注 - </a><br>
+                            <a href="">粉丝 - </a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div id="author_profile_honor"></div>
+                    <div id="author_profile_follow">
+                    </div>
+                </div>
+                <div id="div_digg">
+                    <div class="diggit digg">
+                        <span class="diggnum" id="digg_count">{{ article.up_count }}</span>
+                    </div>
+                    <div class="buryit digg">
+                        <span class="burynum" id="bury_count">{{ article.down_count }}</span>
+                    </div>
+                    <div class="diggword pull-right" id="digg_tips"></div>
+                    <div article_id="{{ article.pk }}" username="{{ request.user.username }}" id="info"></div>
+                </div>
+                <script type="text/javascript">
+                    currentDiggType = 0;
+                </script>
+            </div>
+            <div class="clear"></div>
+            <div id="post_next_prev"><a href="" class="p_n_p_prefix">« </a> 上一篇：<a
+                    href="" title="发布于{{ comment.create_time|date:"Y-m-d H:i" }}">Django之路由系统</a><br>
+            </div>
+        </div>
+        <div class="postDesc">posted @ <span id="post-date">{{ article.create_time|date:"Y-m-d H:i" }}</span>
+            <a href="">{{ article.user.username }}</a> 阅读(<span id="post_view_count">32</span>) 评论(<span
+                    id="post_comment_count">0</span>) <a href="" rel="nofollow">编辑</a> <a href="">收藏</a>
+        </div>
+
+        {#        评论楼内容开始#}
+        <div class="panel panel-primary" id="comment_body" style="margin: 10px 0">
+            {% for comment in comment_list %}
+                <div class="panel panel-success" style="margin: 10px 15px; padding: 0 10px">
+                    <div class="panel-body">
+                        <div class="row my-table-toolbar">
+                            <div class="main">
+                                <ul class="nav nav-sidebar">
+                                    <li>
+                                        <span><a href="" style="font-size: 12px" class="num">#{{ forloop.counter }}楼</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        <span style="font-size: 12px">{{ comment.create_time|date:"Y-m-d H:i" }}</span>&nbsp;&nbsp;
+                                        <span><a href=""
+                                                 style="font-size: 12px" class="username">{{ comment.user_id.username }}</a></span>
+                                        <span><button class="pull-right reply" pk="{{ comment.pk }}"
+                                                      username="{{ comment.user_id.username }}">回复</button></span>
+                                    </li>
+                                    {% if comment.parent_comment_id %}
+                                        <li>
+                                            <span><a href=""
+                                                     style="font-size: 12px">@{{ comment.parent_comment.user_id.username }}</a></span>
+                                            <span style="font-size: 12px">{{ comment.parent_comment.content }}</span>
+                                        </li>
+                                    {% endif %}
+                                    <li>
+                                        <p class="content">{{ comment.content }}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {#        评论楼内容结束#}
+
+{#    评论树内容开始#}
+        <div class="comment_tree">
+
+        </div>
+
+        <script>
+            (function () {
+                $.ajax({
+                    url:'/bbs_app/get_comment_tree/'+$('#info').attr('article_id'),
+                    success:function (comment_list) {
+                        $.each(comment_list, function (index, comment) {
+                            var username = comment.user_id__username;
+                            var pk = comment.pk;
+                            var content = comment.content;
+{#                            var create_time = comment.create_time;#}
+                            var pid = comment.parent_comment_id;
+                            html_str = '<div class="comment_tree_item" id='+pk+'><span>'+username+'</span> <span>'+content+'</span> </div>';
+                            if(pid){
+                                $('#'+pid).append(html_str)
+                            }else {
+                                $('.comment_tree').append(html_str)
+                            }
+                        })
+                    }
+                })
+            })()
+        </script>
+
+{#    评论树结束#}
+
+        <div id="comment_form" class="commentform">
+            <h5 style="color: red" class="com_note">注册用户登录后才能发表评论，请
+                <a href="{% url 'login' %}?next={{ request.path }}">登录</a> 或 <a href="/register/">注册</a>，<a href="/system_home/">访问</a>网站首页。</h5>
+            <div id="comment_form_container" class="hide">
+                <div class="my-comment">
+                    <span id="commentform_title">发表评论</span>
+                <span id="comment_nav" class="pull-right">
+                    <a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments"
+                       runat="server"
+                       clientidmode="Static">刷新评论</a>
+                    <a href="#" onclick="return RefreshPage();">刷新页面</a>
+                    <a href="#top">返回顶部</a>
+                </span>
+                </div>
+
+                <p>
+                    昵称：<input type="text" id="tbCommentAuthor" class="author" disabled="disabled" size="50"
+                              value="{{ request.user.username }}">
+                </p>
+                <div class="commentbox_main">
+                    <div class="commentbox_title">
+                        <div class="commentbox_title_left">评论内容：</div>
+                        <div class="commentbox_title_right">
+                            <img id="ubb_quote" class="comment_icon" src="/static/img/quote.gif" alt="引用" title="添加引用"
+                                 onclick="insertUBB('tbCommentBody','quote')">
+                            <img id="ubb_bold" class="comment_icon" src="/static/img/b.png" alt="粗体" title="添加粗体"
+                                 onclick="insertUBB('tbCommentBody','b')">
+                            <img id="ubb_url" class="comment_icon" src="/static/img/lk.png" alt="链接" title="添加链接"
+                                 onclick="insertUbbUrl('tbCommentBody')">
+                            <img id="ubb_indent" class="comment_icon" src="/static/img/indent.png" alt="缩进"
+                                 title="添加首行缩进"
+                                 onclick="insertIndent('tbCommentBody')">
+                            <img id="ubb_code" class="comment_icon" src="/static/img/InsertCode.gif" alt="代码"
+                                 title="添加代码"
+                                 onclick="insertUbbCode()">
+                            <img id="ubb_img" class="comment_icon" src="/static/img/img.gif" alt="图片" title="上传图片"
+                                 onclick="OpenImageUploadWindow();">
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <textarea id="tbCommentBody" class="comment_textarea"></textarea>
+                </div>
+                <p id="commentbox_opt">
+                    <h5 class="warn"></h5>
+                    <input id="btn_comment_submit" type="button" class="comment_btn" value="提交评论">
+                    <a href="">退出</a>
+                </p>
+                <p>
+                    [Ctrl+Enter快捷键提交]
+                </p>
+                <div style="display:none">
+                    <span id="comment_edit_id"></span><span id="span_parentcomment_id"></span>
+                    <span id="span_parent_id"></span>
+                    <span id="span_comment_replyto"></span>
+                    <span id="span_comment_posted"></span>
+                </div>
+            </div>
+            <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+            <div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】超50万VC++源码:
+                大型组态工控、电力仿真CAD与GIS源码库！</a><br><a href="https://www.yunqi2050.com/#/index" target="_blank">【活动】2050 大会 -
+                年青人因科技而团聚（5.26-27杭州·云栖小镇）</a><br><a
+                    href="http://clickc.admaster.com.cn/c/a105960,b2436453,c1705,i0,m101,8a1,8b2,h" target="_blank">【活动】华为云全新一代云服务器·限时特惠5.6折</a><br><a
+                    href="https://cloud.tencent.com/act/free?fromSource=gwzcw.910319.910319.910319" target="_blank">【推荐】腾讯云多款高规格服务器，免费申请试用6个月</a><br>
+            </div>
+            <div id="opt_under_post"></div>
+            <div id="cnblogs_c1" class="c_ad_block"><a onclick="ga('send', 'event', 'Link', 'click', 'C1');"
+                                                       href="https://cloud.tencent.com/solution/la?fromSource=gwzcw.891967.891967.891967"
+                                                       target="_blank"><img width="300" height="250"
+                                                                            src="/static/img/24442.jpg"
+                                                                            alt="qcloud_C1_0402"></a></div>
+            <div id="under_post_news">
+                <div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> · <a href="https://news.cnblogs.com/n/594839/"
+                                                                       target="_blank">百度AI开放平台给开发者发了三大福利</a><br> · <a
+                        href="https://news.cnblogs.com/n/594838/" target="_blank">中国“潜龙三号”潜水器首潜成功：下潜最大深度3955米</a><br> ·
+                    <a
+                            href="https://news.cnblogs.com/n/594837/" target="_blank">卡巴斯基实验室被禁止在Twitter上投放广告</a><br> ·
+                    <a
+                            href="https://news.cnblogs.com/n/594836/" target="_blank">研究显示App Store首页推荐后
+                        App下载量可涨8倍</a><br> · <a
+                            href="https://news.cnblogs.com/n/594835/" target="_blank">Microsoft Store又迎来六款Progressive
+                        Web应用</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div>
+            </div>
+            <div id="under_post_kb">
+                <div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br>
+                    <div id="kb_recent"> · <a href="http://kb.cnblogs.com/page/593985/"
+                                              target="_blank">如何识别人的技术能力和水平？</a><br> · <a
+                            href="http://kb.cnblogs.com/page/575255/" target="_blank">写给自学者的入门指南</a><br> · <a
+                            href="http://kb.cnblogs.com/page/578690/" target="_blank">和程序员谈恋爱</a><br> · <a
+                            href="http://kb.cnblogs.com/page/585734/" target="_blank">学会学习</a><br> · <a
+                            href="http://kb.cnblogs.com/page/588938/" target="_blank">优秀技术人的管理陷阱</a><br></div>
+                    » <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div>
+            </div>
+            <div id="HistoryToday" class="c_ad_block"></div>
+        </div>
+    </div>
+    <script src="/static/jquery-3.2.1.min.js"></script>
+    <script src="/static/init_ajax.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+
+{% endblock content %}
+
+{% block js_block %}
+    {#点赞或踩灭操作部分开始#}
+    <script>
+        $("#div_digg .digg").on('click', function () {
+            if ("{{ request.user.username }}") {
+                var is_up = $(this).hasClass('diggit');
+                var article_id = '{{ article.pk }}';
+                $.ajax({
+                    url: "blog/poll/",
+                    type: "post",
+                    data: {
+                        is_up: is_up,
+                        article_id: article_id
+                    },
+                    success: function (data) {
+                        if (data.state) {
+                            if (is_up) {
+                                var val = parseInt($('#digg_count').text()) + 1
+                                $('#digg_count').text(val)
+                            } else {
+                                var val = parseInt($('#bury_count').text()) + 1
+                                $('#bury_count').text(val)
+                            }
+                        }
+// {#                    重复操作输出#}
+                        else {
+                            if (data.first_operate) {
+                                $("#digg_tips").html("您已经推荐过").css({"color": "red", "margin-right": "30px"})
+                            } else {
+                                $("#digg_tips").html("您已经反对过").css({"color": "red", "margin-right": "30px"});
+                            }
+                        }
+                    }
+                })
+            } else {
+                location.href = '/login/'
+            }
+        });
+    </script>
+
+    {#点赞或踩灭操作部分结束#}
+    {#评论楼部份开始#}
+    <script>
+        // 定义一个全局变量，用于判定根评论和子评论
+        if('{{ request.user.username }}'){
+            $('#comment_form_container').removeClass('hide');
+            $('.com_note').addClass('hide');
+            var pid = '';
+                // 获取楼层数
+            var num = $('.num').last().text();
+            var newNum = parseInt(num.slice(1,-1))+1;
+            var tneComment = $('#tbCommentBody');
+            $('#btn_comment_submit').on('click',function () {
+                var article_id = $('#info').attr('article_id');
+                if(!(tneComment.val()[0] == '@')){
+                 pid = ''
+                }
+                if (pid) {
+                    var index = tneComment.val().indexOf('\n');
+                    var content = tneComment.val().slice(index + 1)
+                }
+                else {
+                    var content = tneComment.val()
+                }
+                if(content){
+                    $('.warn').text('');
+                    $.ajax({
+                    url: '/bbs_app/comment/',
+                    type: 'post',
+                    data: {
+                        article_id: article_id,
+                        content: content,
+                        pid: pid
+                    },
+                    success: function (data) {
+                        if (data.state) {           // 提交成功
+                            // 获取当前时间
+{#                            var myDate = new Date();#}
+{#                            var year = myDate.getFullYear(); //获取当前年#}
+{#                            var month = myDate.getMonth() + 1; //获取当前月#}
+{#                            var date = myDate.getDate(); //获取当前日#}
+{#                            var h = myDate.getHours();       //获取当前小时数(0-23)#}
+{#                            var m = myDate.getMinutes();     //获取当前分钟数(0-59)#}
+{#                            var now = year + '-' + month + "-" + date + " " + h + ':' + m;#}
+                            var username = $('.username').last().text();
+                            var reContent = $('.content').last().text();
+                            var create_time = data.create_time;
+                            var show_content = data.content;
+                            // 实现页面不刷新赋值
+                            if (pid) {
+                                var newReply = '<div class="panel panel-success" style="margin: 10px 15px; padding: 0 10px">' +
+                                        '<div class="panel-body">' +
+                                        '<div class="row my-table-toolbar">' +
+                                        '<div class="main">' +
+                                        '<ul class="nav nav-sidebar">' +
+                                        '<li>' +
+                                        '<span>' + '<a href="" style="font-size: 12px" class="num">' + '#' + newNum + '楼' + '</a>' + '&nbsp;&nbsp;&nbsp;&nbsp;' + '</span>' +
+                                        '<span style="font-size: 12px">' + create_time + '</span>&nbsp;&nbsp;' +
+                                        '<span><a href="" style="font-size: 12px">' +
+                                        '{{ request.user.username }}'+'</a></span>' +
+                                        '</li>' +
+                                        '<li>' + '<span><a href="" style="font-size: 12px">@'+username+'</a></span>' +
+                                        '<span style="font-size: 12px">' + reContent +'</span> </li>' +'<li><p class="content">' + show_content
+                                        + '</p></li>'
+                                        + '</ul></div></div></div></div>';
+                            }
+                            else {
+                                var newReply = '<div class="panel panel-success" style="margin: 10px 15px; padding: 0 10px">' +
+                                        '<div class="panel-body">' +
+                                        '<div class="row my-table-toolbar">' +
+                                        '<div class="main">' +
+                                        '<ul class="nav nav-sidebar">' +
+                                        '<li>' +
+                                        '<span>' + '<a href="" style="font-size: 12px" class="num">' + '#' + newNum + '楼' + '</a>' + '&nbsp;&nbsp;&nbsp;&nbsp;' + '</span>' +
+                                        '<span style="font-size: 12px">' + create_time + '</span>&nbsp;&nbsp;' +
+                                        '<span><a href="" style="font-size: 12px">' +
+                                        '{{ request.user.username }}'+'</a></span>' +
+                                        '<li><p class="content">' + show_content
+                                        + '</p></li></ul></div></div></div></div>';
+                            }
+                            $('#comment_body').append(newReply)
+                        }
+                        pid = '';
+                        $('#tbCommentBody').val('');
+                        }
+                    })
+                }else {
+                    $('.warn').text('评论不能为空!').css({"color": "red", "margin-right": "30px"})
+                }
+            });
+        }
+
+        // 绑定回复按钮
+        $('#comment_body').on('click','.reply', function () {
+            tneComment.focus();
+            var userName = $(this).attr('username');
+            pid = $(this).attr('pk');
+{#            if(!userName){#}
+{#                userName ='{{ request.user.username }}';#}
+{#                pid = newNum#}
+{#            }#}
+            var val = '@' + userName + '\n';
+            tneComment.val(val);
+        });
+    </script>
+
+    {#评论楼部分结束#}
+
+{#    评论树部分开始#}
+{#<script>#}
+{#    if('{{ request.user.username }}'){#}
+{#        $('#comment_form_container').removeClass('hide');#}
+{#            $('.com_note').addClass('hide');#}
+{#            var pid = '';#}
+{#        $('#btn_comment_submit').on('click', function () {#}
+{#            var article_id = $('#info').attr('article_id');#}
+{#            if (pid) {#}
+{#                var index = tneComment.val().indexOf('\n');#}
+{#                var content = tneComment.val().slice(index + 1)#}
+{#            }#}
+{#            else {#}
+{#                var content = tneComment.val()#}
+{#            }#}
+{#            if(content){#}
+{#                $('.warn').text('');#}
+{#                $.ajax({#}
+{#                    url: '/bbs_app/comment/',#}
+{#                    type: 'post',#}
+{#                    success:function (data) {#}
+{#                        var html_str = show_comment_tree(data);#}
+{#                        $('#comment_body').append(html_str)#}
+{#                    }#}
+{#                })#}
+{#            }else{#}
+{#                $('.warn').text('评论不能为空!').css({"color": "red", "margin-right": "30px"})#}
+{#            }#}
+{#        })#}
+{#    }#}
+{#    function show_comment_tree(comment_list) {#}
+{#        var html_str = '';#}
+{#        $.each(comment_list, function (i, comment_dict) {#}
+{#            var val = comment_dict['content'];#}
+{#            var content_str = ''#}
+{#            if(comment_dict['children_comment']){#}
+{#                var html_str = show_comment_tree(comment_dict['children_comment']);#}
+{#                comment_str = html_str#}
+{#            }#}
+{#            content_str += "</div>";#}
+{#            html_str += content_str#}
+{#        })#}
+{##}
+{#    }#}
+{#</script>#}
+
+{#    评论树部分结束#}
+{% endblock js_block %}

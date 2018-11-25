@@ -1,0 +1,144 @@
+/*博客园自制CSS样式*/
+/*通用样式*/
+body {
+    background-color: white;
+}
+
+.background {
+    background-color: #eee;
+}
+
+#login-box {
+    margin-top: 150px;
+    margin-bottom: 300px;
+}
+
+/*注册页面样式*/
+#avatar {
+    display: none;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    margin-left: 30px;
+}
+
+/*帮助页面样式*/
+.main a {
+    font-size: 16px;
+    font-weight: 600;
+    height: 50px;
+}
+
+.title {
+    color: #0f0f0f;
+    font-size: 15px;
+}
+
+.my_blog_post_info {
+    margin: 20px 0;
+    padding: 10px 0;
+}
+
+.header {
+    width: 100%;
+    height: 50px;
+    background-color: #336699;
+    line-height: 50px;
+    color: white;
+    font-size: 16px;
+}
+
+.header .title {
+    margin-left: 20px;
+    color: navajowhite;
+    font-size: 25px;
+    font-family: WenQuanYi Micro Hei;
+    font-style: italic;
+}
+
+.desc {
+    font-size: 13px;
+    text-align: justify;
+}
+
+.article_list {
+    margin-top: 40px;
+    margin-left: 20px;
+}
+
+.article_title {
+    padding-bottom: 8px;
+}
+
+.article_title a {
+    font-size: 16px;
+    font-weight: 600;
+    color: #122b40;
+}
+
+.small {
+    margin-top: 10px;
+}
+
+.small a {
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.small span {
+    font-size: 12px;
+}
+
+.my-text {
+    margin-top: 70px;
+}
+
+#blog_post_info_block {
+    margin-top: 20px;
+}
+
+.postBody {
+    line-height: 1.5;
+    margin-top: 5px;
+}
+.postBody {
+    padding: 5px 2px 5px 5px;
+    line-height: 1.5;
+    color: #000;
+    font-size: 13px;
+}
+#topics {
+    word-break: break-all;
+}
+
+#mainContent {
+    text-align: left;
+}
+
+.author_avatar{
+    width: 60px;
+    height: 60px;
+}
+.my-comment{
+    margin-top: 50px;
+}
+
+#foot{
+    text-align: center;
+    height: 40px;
+    background-color: palegreen;
+    padding: 10px;
+}
+
+.my-menu{
+    margin: 50px;
+}
+.per-info{
+    margin: 10px 0;
+}
+
+.comment_tree_item{
+    margin-left: 20px;
+}

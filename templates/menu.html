@@ -1,0 +1,44 @@
+<div class="col-md-3 article_list">
+    <div class="my-menu">
+        <img width="120" height="120" src="/media/{{ user.avatar }}" alt="">
+        <p class="per-info">昵称：<a href="/bbs_app/{{ user.username }}">{{ user.blog.title }}</a></p>
+        {% load myfilter %}
+        <p class="per-info">园龄：<a href="/bbs_app/{{ user.username }}">{{ time|round_age }}</a></p>
+    </div>
+    <div class="panel panel-info my-menu">
+        <div class="panel-heading">我的分类</div>
+        <div class="panel-body">
+            {% for cate in cate_list %}
+                <ul class="nav">
+                    <li>
+                        <a href="/bbs_app/{{ username }}/category/{{ cate.0 }}">{{ cate.0 }}({{ cate.1 }})</a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel panel-danger my-menu">
+        <div class="panel-heading">我的标签</div>
+        <div class="panel-body">
+            {% for tag in tag_list %}
+                <ul class="nav">
+                    <li>
+                        <a href="/bbs_app/{{ username }}/tag/{{ tag.0 }}">{{ tag.0 }}({{ tag.1 }})</a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel panel-success my-menu">
+        <div class="panel-heading">日期归档</div>
+        <div class="panel-body">
+            {% for date in date_list %}
+                <ul class="nav">
+                    <li>
+                        <a href="/bbs_app/{{ username }}/date/{{ date.0 }}">{{ date.0 }}({{ date.1 }})</a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>

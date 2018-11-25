@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的随笔 - 博客后台 - 博客园</title>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/my-css.css">
+    <link rel="shortcut icon" href="{% static 'img/log.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="/static/backstage/admin-new.css" rel="stylesheet">
+</head>
+<body>
+<div id="top_nav">
+    <div id="left">
+        « <a href="">网站首页</a><a href="">园子</a><a href="">新闻</a><a href="">博问</a><a href="">闪存</a><a
+            href="">收藏</a><a href="">搜索</a>
+    </div>
+    <div id="right"><a href="/bbs_app/{{ request.user.username }}">{{ request.user.username }}</a>·<a id="user_nav_blog_link" href="">我的博客</a><span
+            id="user_nav_blog_split">·</span><a href="">短消息<span id="msg_count"></span></a>·<a
+            href="">设置</a>·<a href="{% url 'logout' %}">退出</a><span
+            id="current_spaceId" style="display:none">1299289</span></div>
+    <div class="clear"></div>
+</div>
+<div id="main">
+    <div id="main_nav"><a href="{% url 'reset' %}" target="_blank">修改密码</a>|<a
+            href="">备份</a>|<a href="" target="_blank">模板</a></div>
+    <div id="main_head">
+        <div id="blog_title"><a href="/bbs_app/{{ request.user.username }}">{{ request.user.username }}</a></div>
+        <div id="SiteTitle"><a href=""><img alt="logo" src="/static/backstage/adminlogo.gif"></a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="main_body">
+        <div id="main_wrap">
+            <div id="main_container">
+                <div id="tab_nav">
+                    <ul>
+                        <li><a id="TabPosts" href="/bbs_app/{{ username }}/backstage" class="current_nav">随笔</a></li>
+                        <li><a id="TabArticles" href="">文章</a></li>
+                        <li><a id="TabDiary" href="">日记</a></li>
+                        <li><a id="TabFeedback" href="">评论</a></li>
+                        <li><a id="TabLinks" href="">链接</a></li>
+                        <li><a id="TabFavorites" href="">收藏</a></li>
+                        <li><a id="TabGalleries" href="">相册</a></li>
+                        <li><a id="TabFiles" href="">文件</a></li>
+                        <li><a id="TabConfigure" href="">设置</a></li>
+                        <li><a id="TabPreferences" href="">选项</a></li>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+                <div id="sub_nav">
+                    &nbsp;
+                </div>
+                        {## 后台文章展示部分#}
+                                {% block article %}
+                                {% endblock article %}
+            </div>
+        </div>
+        <div id="left_container">
+            <div id="left_nav">
+                <h2>操作</h2>
+                <ul>
+                    <li><a href="/bbs_app/{{ username }}/article_add">添加新随笔</a></li>
+                    <li><a href="" id="nav_draft">草稿箱</a></li>
+                    <li><a href="">设置默认编辑器</a></li>
+                    <li><a target="">博客客户端</a></li>
+                    <li><a target="">博客签名</a></li>
+                    <li><a href="">博客备份</a></li>
+                    <li><a href="">博客搬家</a></li>
+                </ul>
+            </div>
+{#                后台分类展示部分#}
+                    {% load my_tags %}
+                    {% get_backstage_menu username %}
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div id="footer">
+    <a href="">联系我们</a><a href="">反馈问题</a>©2018<a href="">博客园</a>/ 代码改变世界
+</div>
+<script src="/static/init_ajax.js"></script>
+<script src="/static/jquery-3.2.1.min.js"></script>
+<script src="/static/backstage/admin-new.js.下载"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

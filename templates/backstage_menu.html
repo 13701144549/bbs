@@ -1,0 +1,10 @@
+            <div id="sidebar_categories">
+                <h2>分类</h2>
+                <ul id="post_categories">
+                    <li><a href="">[编辑分类]</a></li>
+                    <li><a href="">[未分类]</a></li>
+                    {% for cate in cate_list %}
+                        <li><a href="/bbs_app/{{ username }}/category/{{ cate.0 }}" id="">{{ cate.0 }}({{ cate.1 }}) </a></li>
+                    {% endfor %}
+                </ul>
+            </div>

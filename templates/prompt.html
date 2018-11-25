@@ -1,0 +1,38 @@
+{% extends 'base/navbar.html' %}
+{% block content %}
+{% load static %}
+<!--左侧菜单开始-->
+<div class="container help-title">
+    <h1 class="page-header" style="margin-top: 70px">
+        <a href=""><img src="{% static 'picture/../static/img/logo_f.gif' %}" alt="logo" width="180" height="68"></a>
+        <small>错误提示</small>
+    </h1>
+    <!--主面板开始-->
+    <div class="panel panel-primary">
+        <div class="panel-heading title">没有此用户！请前往以下链接</div>
+        <div class="panel-body">
+            <div class="row my-table-toolbar">
+                <div class="main">
+                    <ul class="nav nav-sidebar">
+                        <li><a href="{% url 'login' %}">登录</a></li>
+                        <li><a href="{% url 'register' %}">注册</a></li>
+                        <li><a href="{% url 'system_home' %}">博客园官网</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+{% endblock %}
+{% block help %}
+    active
+{% endblock %}
+
+{% block name %}
+    错误提示
+{% endblock %}
+
+
